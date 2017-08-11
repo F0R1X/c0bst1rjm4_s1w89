@@ -1,0 +1,187 @@
+#include "card.h"
+#include "deck.h"
+#include "hole_cards.h"
+#include "card_statistics.h"
+#include "card_analysis.h"
+#include "card_type.h"
+#include "card_find.h"
+
+enum game_state{unplaying,playing};
+
+int main(int argc, char *argv[])
+{	
+	Deck deck;
+	deck.fill();//填装卡牌
+	//deck.debug();//输出48张牌
+	deck.shuffle(1);//打乱顺序
+	int random_card = deck.get_random_card();
+	int first_player;
+	HoleCards hole_cards1,hole_cards2,hole_cards3;
+	deck.get_hole_cards(hole_cards1);//获取手牌
+	deck.get_hole_cards(hole_cards2);
+	deck.get_hole_cards(hole_cards3);
+	//抽取一张牌，拿到的先出
+	int ret;
+	while (1)
+	{
+		if ((ret = hole_cards1.findCard(random_card)))
+		{
+			first_player = 1;
+			break;
+		}
+		if ((ret = hole_cards2.findCard(random_card)))
+		{
+			first_player = 2;
+			break;
+		}
+		if ((ret = hole_cards3.findCard(random_card)))
+		{
+			first_player = 3;
+			break;
+		}
+	}
+	hole_cards1.debug();
+	hole_cards2.debug();
+	hole_cards3.debug();
+	game_state state = playing;
+	//CardType card_type = CARD_TYPE_ERROR;
+	int first_round,play1,play2,play3 = 0;
+	//int cardNO[3] = {16,16,16}; //手牌剩余数量;
+	std::vector<Card> play_cards; // 要出的牌
+	std::vector<Card> hole_cards; // 手牌副本
+	std::vector<Card> last_play_cards; //上一轮出的牌
+	first_round = 1;
+	CardFind card_find;
+	while (state)
+	{
+		
+		if (first_round)//首轮出牌
+		{
+			if (first_player == 1)
+			{
+				cout<<"player1 first"<<endl;
+				hole_cards1.robot(play_cards);
+				cout<<"chupai:"<<endl;
+				Card::dump_cards(play_cards);
+				play2 = 1;
+				last_play_cards = play_cards;
+				hole_cards1.remove(play_cards);
+				cout<<"shengyu:"<<endl;
+				hole_cards1.debug();
+			}
+			if (first_player == 2)
+			{
+				cout<<"player2 first"<<endl;
+				hole_cards2.robot(play_cards);
+				cout<<"chupai:"<<endl;
+				Card::dump_cards(play_cards);
+				play3 = 1;
+				last_play_cards = play_cards;
+				hole_cards2.remove(play_cards);
+				cout<<"shengyu:"<<endl;
+				hole_cards2.debug();
+			}
+			if (first_player == 3)
+			{
+				cout<<"player3 first"<<endl;
+				hole_cards3.robot(play_cards);
+				cout<<"chupai:"<<endl;
+				Card::dump_cards(play_cards);
+				play1 = 1;
+				last_play_cards = play_cards;
+				hole_cards3.remove(play_cards);
+				cout<<"shengyu:"<<endl;
+				hole_cards3.debug();
+			}
+			first_round = 0;
+		}
+		if (play1)
+		{
+			cout<<"player1"<<endl;
+			play_cards.clear();
+			hole_cards.clear();
+			hole_cards1.copy_cards(&hole_cards);
+			card_find.tip(last_play_cards,hole_cards);
+			//CardStatistics card_stat;
+			cout<<"last play cards"<<endl;
+			Card::dump_cards(last_play_cards);
+			//cout<<"hole_cards"<<endl;
+			//Card::dump_cards(hole_cards);		
+			card_find.debug();		
+			play_cards = card_find.results.back();
+			card_find.results.pop_back();
+			hole_cards1.remove(play_cards);
+			cout<<"shengyu:"<<endl;
+			hole_cards1.debug();
+			last_play_cards.clear();
+			last_play_cards = play_cards;
+			play1 = 0;
+			play2 = 1;
+		}
+		if (play2)
+		{
+			cout<<"player2"<<endl;
+			play_cards.clear();
+			hole_cards.clear();
+			hole_cards2.copy_cards(&hole_cards);
+			card_find.tip(last_play_cards,hole_cards);
+			//CardStatistics card_stat;
+			cout<<"last play cards"<<endl;
+			Card::dump_cards(last_play_cards);
+			//cout<<"hole_cards"<<endl;
+			//Card::dump_cards(hole_cards);
+			card_find.debug();
+			play_cards = card_find.results.back();
+			card_find.results.pop_back();
+			hole_cards2.remove(play_cards);
+			cout<<"shengyu:"<<endl;
+			hole_cards2.debug();
+			last_play_cards.clear();
+			last_play_cards = play_cards;
+			play2 = 0;
+			play3 = 1;
+		}
+		if (play3)
+		{
+			cout<<"player3"<<endl;
+			play_cards.clear();
+			hole_cards.clear();
+			hole_cards3.copy_cards(&hole_cards);
+			card_find.tip(last_play_cards,hole_cards);
+			//CardStatistics card_stat;
+			cout<<"last play cards"<<endl;
+			Card::dump_cards(last_play_cards);
+			//cout<<"hole_cards"<<endl;
+			//Card::dump_cards(hole_cards);
+			card_find.debug();
+			play_cards = card_find.results.back();
+			card_find.results.pop_back();
+			hole_cards3.remove(play_cards);
+			cout<<"shengyu:"<<endl;
+			hole_cards3.debug();
+			last_play_cards.clear();
+			last_play_cards = play_cards;
+			state = unplaying;
+			play3 = 0;
+			play1 = 1;
+		}
+		if (!state)
+		{
+			break;
+		}
+		
+	}
+	
+	return 0;
+}
+
+
+void copycards(std::vector<Card> &in,std::vector<Card> &out)
+{
+	std::vector<Card>::iterator it;
+	for (it = in.begin(); it != in.end(); it++)
+	{
+		//Card &card = it->second;
+		//out->push_back(card.value);
+	}
+}

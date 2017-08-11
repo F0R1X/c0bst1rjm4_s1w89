@@ -1,0 +1,314 @@
+import "CommonInfo.proto";
+package PGame;
+
+//游戏开始
+message GameStartUc
+{
+	optional int32	uid				= 1;
+	optional int32	seatid			= 2;
+	repeated int32	cards			= 3;
+}
+//切牌广播
+message SplitCardAck
+{
+	optional int32	seatid			= 1;
+}
+//玩家切牌请求
+message SplitCardReq
+{
+	optional int32	position		= 1;
+	optional int32	ensure			= 2;
+}
+//切牌成功
+message SplitCardSuccAck
+{
+	optional int32	uid				= 1;
+	optional int32	seatid			= 2;
+	optional int32	position		= 3;
+}
+//先出规则
+message FirstPlayAck
+{
+	optional int32	seatid			= 1;
+	optional int32	type			= 2;//0--赢家先出 1--黑桃3先出
+}
+//轮到玩家出牌
+message PlayCardAck
+{
+	optional int32	uid				= 1;
+	optional int32	seatid			= 2;
+	optional int32	action			= 3;
+}
+//下家报单
+message SingleCardAck
+{
+	required int32	type			= 1;//0--放走包赔 1--报单顶大
+}
+//用户出牌请求
+message PlayCardReq
+{
+	optional int32	action			= 1;
+	repeated int32 	cards			= 2;
+	optional int32	card_type		= 3;
+}
+//出牌成功广播
+message PlayCardSuccAck
+{
+	optional int32	uid				= 1;
+	optional int32	seatid			= 2;
+	optional int32	action			= 3;
+	optional int32 	card_type		= 4;
+	optional int32	card_nums		= 5;
+	optional int32	base_money		= 6;
+	optional int32	ratio			= 7;
+	repeated int32	cards			= 8;
+}
+//要不起
+message PassCardAck
+{
+	optional int32	uid				= 1;
+	optional int32	seatid			= 2;
+}
+//炸弹结算
+message BombAck
+{
+	optional int32		uid			= 1;
+	optional int32		seatid		= 2;
+	repeated CountMoney	players		= 3;
+
+}
+//操作超时
+message UserTimeoutAck
+{
+	optional int32	uid				= 1;
+	optional int32	seatid			= 2;
+	optional int32 	timeout_type	= 3;//0--断线 1--超时
+}
+//用户掉线
+message UserOfflineAck
+{
+	optional int32	uid				= 1;
+	optional int32	seatid			= 2;
+}
+//公共操作广播
+message UserComOptBC
+{
+	optional int32	opt_type		= 1;//1--明牌发牌 2--抢关 3--加倍 4--明牌
+	repeated int32	seatid			= 2;//操作座位
+	optional int32	ratio			= 3;
+}
+//公共操作请求
+message UserComOptReq
+{
+	optional int32	req_opt			= 1;//0--未操作 1--no 2--yes
+	optional int32	req_type		= 2;//1--明牌发牌 2--抢关 3--加倍 4--明牌
+}
+//公共操作返回
+message UserComOptAck
+{
+	optional int32	uid				= 1;
+	optional int32	seatid			= 2;
+	optional int32	ack_opt			= 3;
+	optional int32	ack_type		= 4;
+	optional int32	ratio			= 5;
+}
+//操作错误
+message UserComOptErrAck
+{
+	optional int32	error_code		= 1;
+}
+//明牌成功广播
+message MingPaiSuccAck
+{
+	optional int32	uid				= 1;
+	optional int32 	seatid			= 2;
+	repeated int32	cards			= 3;
+}
+//结算信息
+message CountMoney
+{
+	optional int32	uid				= 1;
+	optional int32	seatid			= 2;
+	optional int32	money			= 3;//??????????
+	optional int32	cur_money		= 4;//????????
+	optional int32	rmb				= 5;
+	optional int32 	spring			= 6;
+	repeated int32	holes			= 7;
+}
+//游戏结束广播
+message GameEndAck
+{
+	optional int32	fail			= 1;
+	optional int32	seatid			= 2;
+	optional int32	base_money		= 3;
+	optional int32	ratio			= 4;
+	repeated CountMoney	players		= 5;
+}
+//牌桌信息
+message TableInfo
+{
+	optional int32			seatid							= 1;
+	optional int32			state							= 2;
+	optional int32			preready_timer_stamp			= 3;
+	optional int32			play_card_timer_stamp			= 4;
+	optional int32			pass_timer_tstamp				= 5;
+	optional int32			call_timer_stamp				= 6;
+	optional int32			dissolve_room_tstamp			= 7;
+	optional int32			spade3_first_out				= 12;
+	repeated UserInfo		players							= 13;
+	optional int32			cur_seat						= 14;
+	optional int32			action							= 15;
+	optional int32			spade3_owner					= 16;
+	optional int32			table_type						= 17;
+	optional int32			single_rule						= 18;
+	optional int32			bomb_can_split					= 26;
+	optional int32			base_money						= 27;
+	optional int32			stand_money						= 28;
+	optional int32			takein							= 29;
+	optional int32			ratio							= 30;
+	optional int32			banker							= 31;
+	optional int32			max_players						= 32;
+	repeated int32			holes							= 33;
+	repeated int32			play_cards						= 34;
+	optional int32			last_seatid						= 35;
+	repeated int32			last_cards						= 36;
+	repeated int32			player_option					= 37;
+	optional DisRoomInfo	dissolve_room_info				= 39;
+	optional int32 			left_nums 						= 40;
+
+}
+//切牌信息
+message SplitInfo
+{
+	optional int32	state								= 1;
+	optional int32	seatid								= 2;
+	optional int32	positon								= 3;
+}
+//明牌信息
+message MingPaiInfo
+{
+	optional int32	uid									= 1;
+	optional int32	seatid								= 2;
+	repeated int32	cards								= 3;
+}
+//解散房间信息
+message DisRoomInfo
+{
+	optional int32				state					= 1;
+	optional int32				uid						= 2;
+	optional int32				remain_time				= 3;
+	repeated int32				voters_uid				= 4;
+	repeated UserDisRoomInfo	players					= 5;
+
+}
+//结算面板信息
+message SettleInfo
+{
+	optional int32		owner_uid						= 1;//房主
+	optional int32		end_time						= 2;//结束时间
+	repeated UserInfo	players							= 3;
+}
+
+//用户解散房间操作
+message UserDisRoomInfo
+{
+	optional int32	uid									= 1;
+	optional int32	action								= 2;
+}
+//操作错误返回
+message OperationErrAck
+{
+	required ErrorCode	error_code	= 1;
+}
+
+enum ErrorCode
+{
+	OPT_STATE_ERR					= 101;//操作状态错误
+	OPT_TYPE_ERR					= 102;//操作类型错误
+	OPT_REPEAT_ERR					= 103;//重复操作
+	PLAY_SINGLE_CARD_ERR			= 201;//报单出牌错误
+	PLAY_CARD_TYPE_ERR				= 202;//出牌牌型错误
+	PLAY_SPADE3_ERR					= 203;//黑桃3错误
+
+}
+//座位信息
+message SeatInfo
+{
+	optional int32		seatid							= 1;
+	optional int32		occupied						= 2;
+	optional int32		uid								= 3;
+	optional int32		cardno							= 4;
+	optional int32		robot							= 5;
+	optional int32		is_biggest						= 6;
+	optional int32		card_type 						= 7;
+	optional int32		is_single						= 8;
+	optional int32		cur_money						= 9;
+	optional int32		spring							= 10;
+	optional int32		is_max_single					= 11;
+	optional int32		bomb_money						= 12;
+	repeated int32		last_play_cards					= 13;
+	repeated int32		hole_cards						= 14;
+}
+//恢复信息
+message RecoverData
+{
+	optional string		tid			= 1;
+	optional TableInfo	table		= 2;
+	repeated SeatInfo	seats		= 3;
+	repeated UserInfo	players		= 4;
+
+}
+//删除桌子
+message DelTable
+{
+	optional string 	tid			= 1;
+}
+
+//用户请求结算列表返回
+message SettleListAck
+{
+	repeated PlayerSettle	players		= 1;
+	repeated int32 		heart10_seatid 	= 2;//红桃10玩家 -1表示不扎鸟
+}
+
+//玩家结算列表信息
+message PlayerSettle
+{
+	optional UserInfo		player			= 1;
+	repeated SettleList		settle_list		= 2;
+}
+
+//结算列表
+message SettleList
+{
+	optional int32		index				= 1;//第x局
+	optional int32		cur_money			= 2;//x局输赢
+}
+
+//手牌详情请求
+message CardListReq
+{
+	required int32		index 		= 1;//第x局
+}
+
+//手牌详情请求返回
+message CardListAck
+{
+	repeated TotalCardList	players		= 1;
+	optional int32 	heart10_seatid 		= 2;//红桃10玩家 -1表示不扎鸟
+}
+
+message TotalCardList
+{
+	optional UserInfo 	player 		= 1;
+	optional int32		cur_money	= 2;//x局输赢
+	optional int32		bomb_money	= 3;//x局炸弹得分
+	repeated CardList	out_cards	= 4;//第x局手牌详情
+}
+
+//出牌列表
+message CardList
+{
+	optional int32		index		= 1;//第x手
+	repeated int32		cards		= 2;//第x手出牌
+}

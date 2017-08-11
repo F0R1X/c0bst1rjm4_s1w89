@@ -246,10 +246,18 @@ public:
 	void init_member_variable();
 
 	/*****************************************
-		功能：向除了player之外的房间内所有玩家发送广播 map<int, Player*> players
+		功能：组播：向除了player之外的房间内所有玩家发送广播 map<int, Player*> players
 	******************************************/
 	int broadcast(Player *player, const std::string &packet);
+
+	/*****************************************
+		功能：单播：向player玩家发送广播 map<int, Player*> players
+	******************************************/
 	int unicast(Player *player, const std::string &packet);
+
+	/*****************************************
+		功能：产生[start, end]之间的随机数
+	******************************************/
 	int random(int start, int end, int seed);
 	void reset();
 	void vector_to_json_array(std::vector<Card> &cards, Jpacket &packet, string key);

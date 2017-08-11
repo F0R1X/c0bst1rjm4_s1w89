@@ -238,8 +238,16 @@ public:
 public:
 	Table();
 	virtual ~Table();
+
+	/*****************************************
+		功能：初始化table,在(std::nothrow)new 构造之后初始化操作
+	******************************************/
 	int init(Json::Value &val, Client *client);
 	void init_member_variable();
+
+	/*****************************************
+		功能：向除了player之外的房间内所有玩家发送广播 map<int, Player*> players
+	******************************************/
 	int broadcast(Player *player, const std::string &packet);
 	int unicast(Player *player, const std::string &packet);
 	int random(int start, int end, int seed);
@@ -309,8 +317,13 @@ public:
 	void line_heaps(CardStatistics &card_stat,std::vector<Card> &cards_temp,vector<vector<Card> > &heap_group);
 	void two_heaps(CardStatistics &card_stat,std::vector<Card> &cards_temp,vector<vector<Card> > &heap_group);
 	void one_heaps(CardStatistics &card_stat,std::vector<Card> &cards_temp,vector<vector<Card> > &heap_group);
+
+	/*****************************************
+		功能：根据第三个参数来判断是否采用客户的数据或者进行默认的数据来配置，配置值返回到conf_value中，
+	******************************************/
 	int single_conf(string conf_id, int &conf_value, bool user_input = false);
 	int multi_conf(string conf_id, set<int> &conf_value);
+
 	void check_dissovle_result();
 	int handler_dissolve_action(Player *player);
 	int handler_dissolve_room(Player *player);

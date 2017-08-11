@@ -130,54 +130,80 @@ int Table::init(Json::Value &val, Client *client)
 	if (room_state >= 2) {
 		return -1;
 	}
+	//一、玩法配置：1001001 16张玩法，1001002 15张玩法
 	if(single_conf(val["dataMap"]["innerWayList"]["1001"].asString(), table_type) < 0){
-		table_type = pdk.conf["tables"]["table_type"].asInt();
+		table_type = pdk.conf["tables"]["table_type"].asInt();	//玩法配置
 	}
+
+	//二、如果是16张玩法 1020001 3A算炸弹
 	if(table_type == 16){
 		multi_conf(val["dataMap"]["innerWayList"]["1020"].asString(), player_option);
 		a_is_bomb = player_option.find(THREE_A_IS_BOMB) != player_option.end();
 	}
+	//如果是15张玩法 1019001 3K算炸弹
 	else if(table_type == 15){
 		multi_conf(val["dataMap"]["innerWayList"]["1019"].asString(), player_option);
 		k_is_bomb = player_option.find(THREE_K_IS_BOMB) != player_option.end();
 	}
+
+	//三、1002001 首局黑桃3先出 1002002 每局黑桃3先出
 	if(single_conf(val["dataMap"]["innerWayList"]["1002"].asString(), first_rule) < 0){
 		first_rule = pdk.conf["tables"]["first_rule"].asInt();
 	}
+
+	//四、1021001 按剩余牌数结算 1021002 按输多少结算
 	if(single_conf(val["dataMap"]["innerWayList"]["1021"].asString(), settle_type) < 0){
 		settle_type = pdk.conf["tables"]["settle_type"].asInt();
 	}
+	//如果是按照剩余牌数结算 1003001 剩一张不输分 1003002 剩一张输分
 	if(settle_type == 1){
 		if(single_conf(val["dataMap"]["innerWayList"]["1003"].asString(), last_card_rule) < 0){
 			last_card_rule = pdk.conf["tables"]["last_card_rule"].asInt();
 		}
 	}
+
+	//五、1004001 放走包赔 1004002 报单顶大
 	if(single_conf(val["dataMap"]["innerWayList"]["1004"].asString(), single_rule) < 0){
 		single_rule = pdk.conf["tables"]["single_rule"].asInt();
 	}
+
+	//六、1015001 黑桃3必出 1015002
 	if(single_conf(val["dataMap"]["innerWayList"]["1015"].asString(), spade3_first_out) < 0){
 		spade3_first_out = pdk.conf["tables"]["spade3_first_out"].asInt();
 	}
+
+	//七、1016001 玩家3个人 1016002 玩家2个人
 	if(single_conf(val["dataMap"]["innerWayList"]["1016"].asString(), MAX_PLAYERS) < 0){
 		MAX_PLAYERS = pdk.conf["tables"]["max_players"].asInt();
 	}
+
+	//八、1017001 剩余手牌 1017002
 	if(single_conf(val["dataMap"]["innerWayList"]["1017"].asString(), is_display_left) < 0){
 		is_display_left = pdk.conf["tables"]["is_display_left"].asInt();
 	}
+
+	//九、1005001 可四带二 1005002 可四带三
 	multi_conf(val["dataMap"]["innerWayList"]["1005"].asString(), player_option);
+
+	//十、1018001 三张少带出完 1018002 三张少带接完 1018003 飞机少带出完 1018004 飞机少带接完
 	multi_conf(val["dataMap"]["innerWayList"]["1018"].asString(), player_option);
 	
+	//设置了炸弹不可拆
 	if (player_option.find(BOMB_CANNOT_SPLIT) != player_option.end()) {
 		bomb_can_split = 0;
 	}
 	else {
 		bomb_can_split = 1;
 	}
+
+	//房间座位
 	for (int i = 0; i < MAX_PLAYERS; i++)
 	{
 		seats[i].clear();
 		seats[i].seatid = i;
 	}
+
+	//每局红桃10玩家
 	heart10_owner_map.clear();
 	return 0;
 }

@@ -115,6 +115,8 @@ static int init_conf()
 		return -1;
 	}
 	in.close();
+
+	//从config配置文件读取参数，设定map<string, int>
 	pdk.room_conf["1001001"] = pdk.conf["room_conf"]["1001001"].asInt();
 	pdk.room_conf["1001002"] = pdk.conf["room_conf"]["1001002"].asInt();
 	pdk.room_conf["1002001"] = pdk.conf["room_conf"]["1002001"].asInt();

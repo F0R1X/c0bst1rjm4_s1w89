@@ -95,6 +95,8 @@ void Table::init_member_variable()
 {
 	MAX_PLAYERS = 3;
 	tid = "";
+
+	//json库table节点下key：vid value->asInt;
 	vid = pdk.conf["tables"]["vid"].asInt();
 	zid = pdk.conf["tables"]["zid"].asInt();
 	lose_exp = pdk.conf["tables"]["lose_exp"].asInt();
